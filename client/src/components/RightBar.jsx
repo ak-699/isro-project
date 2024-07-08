@@ -1,64 +1,50 @@
-import { Box, Button, ButtonGroup } from '@mui/material';
-import React, { useState } from 'react';
-import RecordModal from './modals/RecordModal';
-import UploadModal from './modals/UploadModal';
-import LiveMeetingModal from './modals/LiveMeetingModal';
-import MicIcon from '@mui/icons-material/Mic';
+import Mic from '@mui/icons-material/Mic'
+import { Button, Grid } from '@mui/material'
+import React from 'react'
+import { Link } from 'react-router-dom'
 import UploadIcon from '@mui/icons-material/Upload';
 import TranscribeIcon from '@mui/icons-material/Transcribe';
 
-const list = [
-  {
-    id: 1,
-    name: 'Record audio',
-    modal: <RecordModal />,
-    icon: <MicIcon />,
-  },
-  {
-    id: 2,
-    name: 'Upload Audio/Video',
-    modal: <UploadModal />,
-    icon: <UploadIcon />,
-  },
-  {
-    id: 3,
-    name: 'Transcribe Live Meeting',
-    modal: <LiveMeetingModal />,
-    icon: <TranscribeIcon />,
-  },
-];
-
 const RightBar = () => {
-  const [openModalId, setOpenModalId] = useState(null);
+    return (
+        <Grid container spacing={2}>
+            <Grid item xs={12} >
+                <Link to={"/user/record"}>
+                    <Button
+                        variant='contained'
+                        sx={{ width: "100%" }}
+                        startIcon = {<Mic />}
+                    >
+                        Record Audio
+                    </Button>
+                </Link>
+            </Grid>
+            <Grid item xs={12} >
+                <Link to={"/user/upload"}>
+                    <Button 
+                        variant='contained' 
+                        startIcon={<UploadIcon />}
+                        sx={{ width: "100%" }}
+                    >
+                        Upload Audio
+                    </Button>
+                </Link>
+            </Grid>
+            <Grid item xs={12}>
+                <Link to={"/user/record"}>
+                    <Button 
+                    variant='contained' 
+                    startIcon={<TranscribeIcon />}
+                    sx={{ width: "100%" }}
+                    disabled
+                    >
+                        Transcribe Live Meeting
+                    </Button>
+                </Link>
+            </Grid>
 
-  const handleOpenModal = (id) => {
-    setOpenModalId(id);
-  };
+        </Grid>
+    )
+}
 
-  const handleCloseModal = () => {
-    setOpenModalId(null);
-  };
-
-  return (
-    <>
-      <ButtonGroup variant="contained" orientation="vertical" sx={{ minWidth: 280 }} disableElevation>
-        {list.map((item) => (
-          <Button startIcon={item.icon} key={item.id} sx={{ mb: 1.5 }} onClick={() => handleOpenModal(item.id)}>
-            {item.name}
-          </Button>
-        ))}
-      </ButtonGroup>
-
-      {list.map(
-        (item) =>
-          openModalId === item.id && (
-            <React.Fragment key={item.id}>
-              {React.cloneElement(item.modal, { open: true, handleClose: handleCloseModal })}
-            </React.Fragment>
-          )
-      )}
-    </>
-  );
-};
-
-export default RightBar;
+export default RightBar

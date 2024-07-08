@@ -1,24 +1,35 @@
-// src/App.js
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import VideoPage from './components/VideoPage';
-import HomePage from './pages/HomePage';
-import { CssBaseline } from '@mui/material';
+import Header from './components/Header';
+import Layout from './components/Layout';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import RecordPage from './pages/RecordPage';
+import UploadPage from './pages/UploadPage';
 import AudioAnalysisPage from './pages/AudioAnalysisPage';
-import LeftDrawer from './components/LeftDrawer';
+import DashboardPage from './pages/DashboardPage';
 
-function App() {
+const App = () => {
   return (
-    <Router>
-      <CssBaseline />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/all-files" element={<div>all files</div>} />
-        <Route path="/all-files/:id" element={<AudioAnalysisPage />} />
-        <Route path="/left" element={<LeftDrawer/>} />
-      </Routes>
-    </Router>
+    <>
+
+
+      <BrowserRouter>
+
+        <Routes>
+          {/* Routes that include the common layout */}
+          <Route path="/user" element={<Layout />}>
+            {/* Nested routes within the Layout */}
+            <Route index element={<DashboardPage />} />
+            <Route path="record" element={<RecordPage />} />
+            <Route path="upload" element={<UploadPage />} />
+            <Route path="files/:id" element={<AudioAnalysisPage />} />
+          </Route>
+
+          {/* Add a route for the root or other pages if needed */}
+          <Route path="/" element={<div>Home Page</div>} />
+        </Routes>
+      </BrowserRouter>
+    </>
   );
-}
+};
 
 export default App;
