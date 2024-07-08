@@ -25,7 +25,8 @@ app.use(bodyParser.json());
 app.use("/user", express.static(path.join(__dirname, 'uploads')));
 
 // MongoDB connection
-const url = "mongodb+srv://kumar699abhishek:r24bn7RN1w19SKGk@mern-isro.jfcoqbh.mongodb.net/?retryWrites=true&w=majority&appName=mern-isro"
+// const url = "mongodb+srv://kumar699abhishek:r24bn7RN1w19SKGk@mern-isro.jfcoqbh.mongodb.net/?retryWrites=true&w=majority&appName=mern-isro"
+const url = "mongodb://localhost:27017/mern-isro"
 mongoose.connect(url)
     .then(() => console.log("connected to mongodb!"))
     .catch((err) => console.log(err))
