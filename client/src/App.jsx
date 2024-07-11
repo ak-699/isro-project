@@ -6,6 +6,8 @@ import RecordPage from './pages/RecordPage';
 import UploadPage from './pages/UploadPage';
 import AudioAnalysisPage from './pages/AudioAnalysisPage';
 import DashboardPage from './pages/DashboardPage';
+import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage';
 
 const App = () => {
   return (
@@ -26,6 +28,8 @@ const App = () => {
 
           {/* Add a route for the root or other pages if needed */}
           <Route path="/" element={<div>Home Page</div>} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
         </Routes>
       </BrowserRouter>
     </>

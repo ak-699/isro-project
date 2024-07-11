@@ -30,9 +30,8 @@ const RecordPage = () => {
     useEffect(() => {
         const handleBeforeUnload = (event) => {
             if ((recording || audioBlob) && !uploaded) {
-                const message = 'You have an ongoing recording. If you leave, your recording will be lost.';
-                event.returnValue = message;
-                return message;
+                event.preventDefault();
+                event.returnValue = true;
             }
         };
 
@@ -113,7 +112,7 @@ const RecordPage = () => {
             .then(data => {
                 console.log("File uploaded successfully: ", data)
                 setUploaded(true);
-                navigate(`/user/files/${data._id}`)
+                navigate(`/user/files/${data.doc._id}`)
             })
             .catch(err => {
                 console.log("Error occured while uploading", err);

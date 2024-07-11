@@ -17,8 +17,6 @@ const port = 5000;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const pythonScriptPath = path.join(__dirname, 'scripts', 'process_audio.py');
-
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -109,19 +107,19 @@ app.post("/summarize", async (req, res) => {
     } else if (doc.summaryStatus === 'in-progress') {
         return res.json({ message: `${doc.mediaName}: Summarization is in progress`, summaryStatus: doc.summaryStatus })
     }
-
+    // if summaryStatus === "not-available"
     const mediaPathInfo = path.parse(doc.mediaName);
     const transcriptURL = doc.transcriptURL;
     const summaryURL = path.join(__dirname, "summary", `${mediaPathInfo.name}.txt`);
-    doc.summaryStatus === "in-progress";
+    doc.summaryStatus = "in-progress";
     await doc.save()
     res.json({ message: "Summarization started...", summaryStatus: doc.summaryStatus });
 
 
     try {
-
         console.log("Starting summarization...")
         await summarize(transcriptURL, summaryURL);
+        console.log("exited summarization")
         doc.summaryStatus = "available";
         doc.summaryURL = summaryURL;
         await doc.save();
@@ -150,7 +148,7 @@ app.post("/transcribe", async (req, res) => {
         console.log(`Transcription in progress for media: ${doc.mediaName}`);
         return res.json({ message: `${doc.mediaName}: Transcription is in progress`, transcriptStatus: doc.transcriptStatus });
     }
-
+    // transcriptStatus === "not-available"
     const mediaPathInfo = path.parse(doc.mediaName);
     const transcriptDir = path.join(__dirname, "transcript", mediaPathInfo.name);
 
@@ -162,7 +160,7 @@ app.post("/transcribe", async (req, res) => {
 
     try {
         console.log("Starting transcription process...");
-        transcribe(doc.mediaURL, "small", transcriptDir);
+        await transcribe(doc.mediaURL, "small", transcriptDir);
         console.log("Finished transcription process");
 
         const transcriptURL = path.join(transcriptDir, `${mediaPathInfo.name}.txt`);
@@ -177,7 +175,6 @@ app.post("/transcribe", async (req, res) => {
     }
 });
 
-
 app.get("/summary/:id", async (req, res) => {
     const { id } = req.params;
     const doc = await Media.findById(id);
@@ -188,13 +185,13 @@ app.get("/summary/:id", async (req, res) => {
         if (existsSync(doc.summaryURL)) {
 
             const summary = readFileSync(doc.summaryURL);
-            return res.json({ summary });
+            return res.json({ summary, doc });
         }
         return res.status(500).json({ message: "cannot find file" })
     } else if (doc.summaryStatus === "in-progress") {
-        return res.json({ message: "Summarization in progress" });
+        return res.json({ message: "Summarization in progress", doc });
     } else {
-        return res.json({ message: "Summary does not exit, start summarization" });
+        return res.json({ message: "Summary does not exit, start summarization", doc });
     }
 })
 
@@ -208,13 +205,13 @@ app.get("/transcript/:id", async (req, res) => {
         if (existsSync(doc.transcriptURL)) {
 
             const transcript = readFileSync(doc.transcriptURL);
-            return res.json({ transcript });
+            return res.json({ transcript, doc });
         }
         return res.status(500).json("server error")
     } else if (doc.transcriptStatus === "in-progress") {
-        return res.json({ message: "Transcription in progress" });
+        return res.json({ message: "Transcription in progress", doc });
     } else {
-        return res.json({ message: "Transcription does not exit, start Transcription" });
+        return res.json({ message: "Transcription does not exit, start Transcription", doc });
     }
 })
 
