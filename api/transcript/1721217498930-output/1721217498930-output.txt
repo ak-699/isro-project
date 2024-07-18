@@ -1,0 +1,27 @@
+So, this is my update for the project.
+I have improved the record audio functionality.
+As you can see, we can start recording and there is an option to stop it and pause it.
+You cannot cancel it in between.
+It will show you a notification, you have unsaved notification, unsaved recording, are
+you sure you want to leave, your recording will be lost.
+We will press cancel, recording will start from as usual, we can stop the recording now.
+Again, without a update, uploading, if we cancel it, we will again get a notification
+that do you want to save the recording, we press cancel, we can even refresh it and we
+will get another problem, changes that you may not be saved, you just cancel.
+Here we can upload it.
+Once we upload it, we will redirect it to the audio analysis page.
+Here we can preview our recording.
+If we press transcribe, here you can see without transcription, summarization is disabled,
+we will press transcribe, we will get a banner, transcription started and a skeleton loading
+effect.
+After some time, transition will be done and this is transcript and it is now enabled,
+summarization.
+So, we will press summarization now, summarization has started, as you can see the skeleton
+loading effect, here summarization is done, we will click cancel, this is the summary.
+Now we will go back to the dashboard, we can see our recording has been added, if we click
+on it, we will go to the audio analysis page, let's go back again and let's try to close
+the server once.
+So, here we will close the server and we will refresh it, we have got the error occurred
+while fetching files, we refresh after some time, we have got a no file, so here we have
+got feedback that we have files, but due to some error, we cannot see them correctly,
+we will just close it and that's it.

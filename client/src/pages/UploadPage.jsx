@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Box, Button, Typography, TextField } from '@mui/material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import SnackbarAlert from '../components/SnackbarAlert';
+import AuthContext from '../contexts/Auth/AuthContext';
 
 const UploadPage = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileError, setFileError] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const {user} = useContext(AuthContext);
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   }
@@ -30,16 +32,17 @@ const UploadPage = () => {
   const handleUpload = async () => {
     if (selectedFile) {
       const formData = new FormData();
-      formData.append('media', selectedFile);
+      formData.append('file', selectedFile);
 
       try {
-        const response = await fetch('http://localhost:5000/upload', {
+        const response = await fetch('http://localhost:5000/api/upload', {
           method:"POST",
           body:formData,
+          credentials: "include"
         })
         const data = await response.json();
         console.log(data);
-        navigate(`/user/files/${data.doc._id}`);
+        navigate(`/${user.username}/files/${data.file._id}`);
       } catch (error) {
         console.error('Error uploading file:', error);
         setFileError("Cannot connect to server")

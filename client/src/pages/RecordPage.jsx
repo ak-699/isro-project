@@ -102,10 +102,12 @@ const RecordPage = () => {
 
     const uploadRecording = () => {
         const formData = new FormData();
-        formData.append("media", audioBlob, "recording.wav")
-        const response = fetch("http://localhost:5000/upload", {
+        formData.append("file", audioBlob, "recording.wav")
+        const response = fetch("http://localhost:5000/api/upload", {
             method: "POST",
             body: formData,
+            credentials: "include",
+            
         });
         response
             .then(res => res.json())

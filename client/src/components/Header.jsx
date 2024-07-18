@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
@@ -7,8 +7,10 @@ import CircleNotificationsIcon from '@mui/icons-material/CircleNotifications';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useTheme } from '@emotion/react'
+import AuthContext from '../contexts/Auth/AuthContext'
 
 const Header = ({ drawerWidth, mobileOpen, setMobileOpen }) => {
+    const { isAuthenticated, user } = useContext(AuthContext);
     const theme = useTheme();
     return (
         <Box >
@@ -36,10 +38,10 @@ const Header = ({ drawerWidth, mobileOpen, setMobileOpen }) => {
                     </IconButton>
 
                     <Typography variant="h6" component={"h1"}>
-                        Transcripto
+                        {isAuthenticated ? "Welcome, " + user?.username : "HI no user"}
                     </Typography>
 
-                    <Box >
+                    {/* <Box >
 
                         <IconButton>
                             <Badge badgeContent={4} color='secondary' >
@@ -51,7 +53,7 @@ const Header = ({ drawerWidth, mobileOpen, setMobileOpen }) => {
                             <AccountCircleIcon />
                         </IconButton>
 
-                    </Box>
+                    </Box> */}
                 </Toolbar>
             </AppBar>
         </Box>

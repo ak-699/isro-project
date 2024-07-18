@@ -1,15 +1,17 @@
 import Mic from '@mui/icons-material/Mic'
 import { Button, Grid } from '@mui/material'
-import React from 'react'
+import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import UploadIcon from '@mui/icons-material/Upload';
 import TranscribeIcon from '@mui/icons-material/Transcribe';
+import AuthContext from '../contexts/Auth/AuthContext';
 
 const RightBar = () => {
+    const {user } = useContext(AuthContext)
     return (
         <Grid container spacing={2}>
             <Grid item xs={12} >
-                <Link to={"/user/record"}>
+                <Link to={`/${user?.username}/record`}>
                     <Button
                         variant='contained'
                         sx={{ width: "100%" }}
@@ -20,7 +22,7 @@ const RightBar = () => {
                 </Link>
             </Grid>
             <Grid item xs={12} >
-                <Link to={"/user/upload"}>
+                <Link to={`/${user?.username}/upload`}>
                     <Button 
                         variant='contained' 
                         startIcon={<UploadIcon />}
@@ -30,7 +32,7 @@ const RightBar = () => {
                     </Button>
                 </Link>
             </Grid>
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
                 <Link to={"/user/record"}>
                     <Button 
                     variant='contained' 
@@ -41,7 +43,7 @@ const RightBar = () => {
                         Transcribe Live Meeting
                     </Button>
                 </Link>
-            </Grid>
+            </Grid> */}
 
         </Grid>
     )

@@ -3,6 +3,7 @@ import Grid from '@mui/material/Grid'
 import { Alert, Box, Card, Snackbar, Typography, useTheme } from '@mui/material'
 import AudioFile from '../components/AudioFile'
 import RightBar from '../components/RightBar'
+import axios from 'axios'
 
 const data = [{ "id": 1, "title": "Kendall-Tamiami Executive Airport", "date": "08/24/2023" },
 { "id": 2, "title": "Ruston Regional Airport", "date": "08/22/2023" },
@@ -40,14 +41,10 @@ const DashboardPage = () => {
         const fetchData = async () => {
             try {
 
-                const response = await fetch("http://localhost:5000/media");
-                if (!response.ok) {
-                    console.log(response);
-                    throw new Error("Error occured while fetching files!");
-                }
-                const data = await response.json();
-                setFiles(data);
-                console.log(data);
+                const response = await axios.get("http://localhost:5000/api/files",{withCredentials:true});
+                // console.log(response)
+                setFiles(response.data.files);
+                // console.log(response.data.files);
             } catch (error) {
                 setSnackbarMessage("Error occured while fetching files! Refresh after some time!")
                 setSnackbarOpen(true);
@@ -67,7 +64,7 @@ const DashboardPage = () => {
                         {files && files.length > 0 ? (
                         files.map(item => (
                             <Grid item xs={12} sm={6} lg={4} key={item._id}>
-                                <AudioFile title={item.mediaName} date={item.createdAt} id={item._id}/>
+                                <AudioFile title={item.fileName} date={item.createdAt} id={item._id}/>
                             </Grid>
                         ))
                     ) : (

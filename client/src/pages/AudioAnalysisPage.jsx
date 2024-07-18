@@ -5,6 +5,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import SnackbarAlert from '../components/SnackbarAlert';
+import {format} from "date-fns"
 
 const AVAILABLE = "available";
 const NOT_AVAILABLE = "not-available"
@@ -24,15 +25,13 @@ const AudioAnalysisPage = () => {
     useEffect(() => {
         const fetchFile = async () => {
             try {
-                const response = await fetch(`http://localhost:5000/media/${id}`);
-                const data = await response.json();
-                // console.log(data)
-                // console.log(data.message)
-                setFile(data.doc);
-                setTranscriptStatus(data.doc.transcriptStatus)
-                setSummaryStatus(data.doc.summaryStatus);
+                const response = await axios.get(`http://localhost:5000/api/files/${id}`, { withCredentials: true });
+                console.log(response)
+                setFile(response.data.file);
+                setTranscriptStatus(response.data.file.transcriptStatus)
+                setSummaryStatus(response.data.file.summaryStatus);
 
-                console.log("Requested file has been fetched", data.doc);
+                console.log("Requested file has been fetched", response.data.file);
             } catch (error) {
                 console.error(error);
             }
@@ -66,17 +65,18 @@ const AudioAnalysisPage = () => {
         console.log("clicked transcribe");
         if (transcriptStatus === "available") {
             setSnackbarOpen(true);
-            setSnackbarMessage(`Trasncription Status: AVAILABLE for: `, id);
+            setSnackbarMessage(`Transcription Status: AVAILABLE `);
             return;
         }
 
         try {
-            const response = await fetch("http://localhost:5000/transcribe", {
+            const response = await fetch(`http://localhost:5000/api/transcript`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ id })
+                body: JSON.stringify({ id }),
+                credentials: "include",
             })
 
             if (response.ok) {
@@ -109,7 +109,7 @@ const AudioAnalysisPage = () => {
         }
         try {
 
-            const response = await fetch("http://localhost:5000/summarize", {
+            const response = await fetch("http://localhost:5000/api/summary", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -181,17 +181,16 @@ const AudioAnalysisPage = () => {
         console.log("transcript clicked")
         // if (transcriptStatus === AVAILABLE && transcript !== null) return;
         try {
-            const response = await fetch(`http://localhost:5000/transcript/${id}`)
-            if (response.ok) {
-                const data = await response.json();
-                // console.log(data);
-                if (data.transcript) {
-                    const str = data.transcript.data?.map(char => String.fromCharCode(char)).join("");
-                    console.log(str);
-                    setTranscript(str);
-                    setTranscriptStatus(AVAILABLE);
-                }
+            const response = await axios.get(`http://localhost:5000/api/transcript/${id}`, { withCredentials: true })
+
+            // console.log(data);
+            if (response.data.transcript) {
+                const str = response.data.transcript.data?.map(char => String.fromCharCode(char)).join("");
+                console.log(str);
+                setTranscript(str);
+                setTranscriptStatus(AVAILABLE);
             }
+
         } catch (error) {
             console.log(error)
         }
@@ -201,9 +200,9 @@ const AudioAnalysisPage = () => {
         console.log("clicked summary");
         // if (summaryStatus === AVAILABLE ) return;
         try {
-            const response = await fetch(`http://localhost:5000/summary/${id}`);
-            if (response.ok) {
-                const data = await response.json();
+            const response = await axios.get(`http://localhost:5000/api/summary/${id}`, {withCredentials:true});
+            if (response) {
+                const data = response.data;
                 console.log(data);
                 if (data.summary) {
 
@@ -218,7 +217,10 @@ const AudioAnalysisPage = () => {
 
         }
     }
-
+    const staticFileURL = `http://localhost:5000/files/${file?.fileName}`
+    const formatDate = (dateString) => {
+        return format(new Date(dateString), "MMMM dd, yyyy, HH:mm aa");
+      };
 
     return (
         <Box >
@@ -229,15 +231,30 @@ const AudioAnalysisPage = () => {
                 <Grid item xs={12} lg={6}>
                     <Paper elevation={3} sx={{ pb: 1 }}>
 
-                        <video controls src={`http://localhost:5000/user/${file?.mediaName}`} style={{ width: '100%' }} />
+                        <video controls src={staticFileURL} style={{ width: '100%' }} />
 
-                        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" , px:2}}>
                             <Box>
-                                <Typography>{file?.mediaName}</Typography>
-                                <Typography variant='body2'>{file?.createdAt}</Typography>
+                                <Typography
+                                    sx={{
+                                        fontWeight: 'bold',
+                                        color: 'primary.main',
+                                        marginBottom: 1
+                                    }}
+                                >
+                                    {file?.fileName}
+                                </Typography>
+                                <Typography
+                                    variant='body2'
+                                    sx={{
+                                        color: 'text.secondary'
+                                    }}
+                                >
+                                    {file?.createdAt? formatDate(file?.createdAt): "nodate"}
+                                </Typography>
                             </Box>
                             <Box >
-                                <Button onClick={handleTranscribe}>Transcribe</Button>
+                                <Button onClick={handleTranscribe} >Transcribe</Button>
                                 <Button disabled={(transcriptStatus !== "not-available") ? false : true} onClick={handleSummary} mr={2} >Summarize</Button>
                             </Box>
 
