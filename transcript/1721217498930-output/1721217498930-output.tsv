@@ -1,0 +1,28 @@
+start	end	text
+0	9280	So, this is my update for the project.
+9280	11600	I have improved the record audio functionality.
+11600	21400	As you can see, we can start recording and there is an option to stop it and pause it.
+21400	22900	You cannot cancel it in between.
+22900	27440	It will show you a notification, you have unsaved notification, unsaved recording, are
+27440	29880	you sure you want to leave, your recording will be lost.
+29880	35600	We will press cancel, recording will start from as usual, we can stop the recording now.
+35600	40880	Again, without a update, uploading, if we cancel it, we will again get a notification
+40880	46600	that do you want to save the recording, we press cancel, we can even refresh it and we
+46600	51880	will get another problem, changes that you may not be saved, you just cancel.
+51880	52880	Here we can upload it.
+52880	56880	Once we upload it, we will redirect it to the audio analysis page.
+56880	59640	Here we can preview our recording.
+59640	65360	If we press transcribe, here you can see without transcription, summarization is disabled,
+65360	69240	we will press transcribe, we will get a banner, transcription started and a skeleton loading
+69240	70240	effect.
+70240	77560	After some time, transition will be done and this is transcript and it is now enabled,
+77560	78560	summarization.
+78560	83080	So, we will press summarization now, summarization has started, as you can see the skeleton
+83080	88960	loading effect, here summarization is done, we will click cancel, this is the summary.
+88960	95200	Now we will go back to the dashboard, we can see our recording has been added, if we click
+95200	103720	on it, we will go to the audio analysis page, let's go back again and let's try to close
+103720	104720	the server once.
+104720	117120	So, here we will close the server and we will refresh it, we have got the error occurred
+117120	121840	while fetching files, we refresh after some time, we have got a no file, so here we have
+121840	127720	got feedback that we have files, but due to some error, we cannot see them correctly,
+127720	130640	we will just close it and that's it.
