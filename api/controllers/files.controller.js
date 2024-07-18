@@ -16,7 +16,7 @@ const getFiles = async (req, res) => {
     console.log("reached files controller")
     try {
         const userID = req.user.id;
-        const files = await File.find({userID});
+        const files = await File.find({ userID });
         res.status(200).json({ message: "Successful", files });
     } catch (error) {
         console.error('Error fetching media files:', error);
@@ -24,4 +24,19 @@ const getFiles = async (req, res) => {
     }
 }
 
-export { getFiles, getFile }
+const deleteFile = async (req, res) => {
+    console.log("Deletion controller");
+    const id = req.params.id;
+    try {
+        const file = await File.findByIdAndDelete(id);
+        if (!file) {
+            return res.status(404).json({ message: "File not found" });
+        }
+        res.status(200).json({ message: "File deleted successfully" });
+    } catch (error) {
+        console.log(error)
+        res.send(500).json({ message: "Internal server error" });
+    }
+}
+
+export { getFiles, getFile, deleteFile }
