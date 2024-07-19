@@ -3,8 +3,7 @@ import Grid from '@mui/material/Grid'
 import { Alert, Box, Card, Snackbar, Typography, useTheme } from '@mui/material'
 import AudioFile from '../components/AudioFile'
 import RightBar from '../components/RightBar'
-import axios from 'axios'
-
+import axios from '../axios/axios'
 const data = [{ "id": 1, "title": "Kendall-Tamiami Executive Airport", "date": "08/24/2023" },
 { "id": 2, "title": "Ruston Regional Airport", "date": "08/22/2023" },
 { "id": 3, "title": "Municipal José Figueiredo Airport", "date": "07/27/2023" },
@@ -41,7 +40,7 @@ const DashboardPage = () => {
         const fetchData = async () => {
             try {
 
-                const response = await axios.get("http://localhost:5000/api/files",{withCredentials:true});
+                const response = await axios.get("/api/files",{withCredentials:true});
                 // console.log(response)
                 setFiles(response.data.files);
                 // console.log(response.data.files);

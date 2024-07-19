@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+// import axios from 'axios';
 import AuthContext from './AuthContext';
+import axios from '../../axios/axios.js';
 
 const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -11,7 +12,7 @@ const AuthProvider = ({ children }) => {
         const fetchUser = async () => {
             try {
                 console.log("fetching user")
-                const response = await axios.get("http://localhost:5000/api/auth/verify", { withCredentials: true });
+                const response = await axios.get("/api/auth/verify", { withCredentials: true });
                 if (response.data.isAuthenticated) {
                     console.log("Authenticated user")
                     setIsAuthenticated(true);
@@ -32,7 +33,7 @@ const AuthProvider = ({ children }) => {
 
     const logout = async ()=> {
         console.log("logging out")
-        const response = await axios.get("http://localhost:5000/api/auth/logout", {withCredentials: true})
+        const response = await axios.get("/api/auth/logout", {withCredentials: true})
         console.log(response.data)
         setIsAuthenticated(false)
         setUser(null)

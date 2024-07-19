@@ -2,19 +2,23 @@ import React, { useContext, useState } from 'react';
 import { Box, Grid, TextField, Button, Typography } from '@mui/material';
 import GoogleIcon from '@mui/icons-material/Google';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import AuthContext from '../contexts/Auth/AuthContext';
+import LandingHeader from '../components/LandingHeader';
+import SnackbarAlert from '../components/SnackbarAlert';
+import axios from '../axios/axios';
 
 const SignupPage = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const {setIsAuthenticated, setUser, } = useContext(AuthContext)
     const navigate = useNavigate()
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState("");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post("http://localhost:5000/api/auth/register", { username, password }, { withCredentials: true })
+            const response = await axios.post("/api/auth/register", { username, password }, { withCredentials: true })
             console.log(response.data);
             setIsAuthenticated(true);
             setUser(response.data.user)
@@ -22,10 +26,13 @@ const SignupPage = () => {
             
         } catch (error) {
             console.log(error)
+            setSnackbarMessage(error.message);
+            setSnackbarOpen(true);
         }
     }
     return (
         <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center' }}>
+            <LandingHeader />
             <Grid container sx={{ minHeight: '100vh' }}>
                 <Grid
                     item
@@ -109,6 +116,11 @@ const SignupPage = () => {
                     }}
                 />
             </Grid>
+            <SnackbarAlert 
+                open={snackbarOpen} 
+                close={() => setSnackbarOpen(false)} 
+                type={"error"}
+            >{snackbarMessage}</SnackbarAlert>
         </Box>
     );
 };

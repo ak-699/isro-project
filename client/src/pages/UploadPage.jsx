@@ -1,9 +1,9 @@
 import React, { useContext, useState } from 'react';
 import { Box, Button, Typography, TextField } from '@mui/material';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import SnackbarAlert from '../components/SnackbarAlert';
 import AuthContext from '../contexts/Auth/AuthContext';
+import axios from '../axios/axios';
 
 const UploadPage = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -31,25 +31,30 @@ const UploadPage = () => {
 
   const handleUpload = async () => {
     if (selectedFile) {
-      const formData = new FormData();
-      formData.append('file', selectedFile);
+        const formData = new FormData();
+        formData.append('file', selectedFile);
 
-      try {
-        const response = await fetch('http://localhost:5000/api/upload', {
-          method:"POST",
-          body:formData,
-          credentials: "include"
-        })
-        const data = await response.json();
-        console.log(data);
-        navigate(`/${user.username}/files/${data.file._id}`);
-      } catch (error) {
-        console.error('Error uploading file:', error);
-        setFileError("Cannot connect to server")
-        setSnackbarOpen(true);
-      }
+        try {
+            const response = await axios.post('/api/upload',
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    },
+                    withCredentials: true
+                }
+            );
+            const data = response.data;
+            console.log(data);
+            navigate(`/${user.username}/files/${data.file._id}`);
+        } catch (error) {
+            console.error('Error uploading file:', error);
+            setFileError("Cannot connect to server");
+            setSnackbarOpen(true);
+        }
     }
-  };
+};
+
 
   return (
     <Box

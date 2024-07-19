@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import { useTheme } from '@emotion/react';
 import SnackbarAlert from '../components/SnackbarAlert';
+import axios from '../axios/axios';
 
 
 const RecordPage = () => {
@@ -100,28 +101,30 @@ const RecordPage = () => {
         window.URL.revokeObjectURL(url);
     };
 
-    const uploadRecording = () => {
-        const formData = new FormData();
-        formData.append("file", audioBlob, "recording.wav")
-        const response = fetch("http://localhost:5000/api/upload", {
-            method: "POST",
-            body: formData,
-            credentials: "include",
-            
-        });
-        response
-            .then(res => res.json())
-            .then(data => {
-                console.log("File uploaded successfully: ", data)
-                setUploaded(true);
-                navigate(`/user/files/${data.doc._id}`)
-            })
-            .catch(err => {
-                console.log("Error occured while uploading", err);
-                setUploaded(false);
-                setSnackbarOpen(true);
-            })
-    }
+const uploadRecording = () => {
+    const formData = new FormData();
+    formData.append("file", audioBlob, "recording.wav");
+
+    axios.post("http://localhost:5000/api/upload", formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        },
+        withCredentials: true
+    })
+    .then(response => {
+        const data = response.data;
+        console.log("File uploaded successfully: ", data);
+        setUploaded(true);
+        navigate(`/user/files/${data.doc._id}`);
+    })
+    .catch(err => {
+        console.log("Error occurred while uploading", err);
+        setUploaded(false);
+        setSnackbarOpen(true);
+    });
+};
+
+    
 
     const formatTime = (seconds) => {
         const h = String(Math.floor(seconds / 3600)).padStart(2, '0');

@@ -3,9 +3,9 @@ import { Box, Button, Typography, Paper, Grid, IconButton, CircularProgress, Ske
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
 import SnackbarAlert from '../components/SnackbarAlert';
-import {format} from "date-fns"
+import { format } from "date-fns"
+import axios from '../axios/axios';
 
 const AVAILABLE = "available";
 const NOT_AVAILABLE = "not-available"
@@ -25,7 +25,7 @@ const AudioAnalysisPage = () => {
     useEffect(() => {
         const fetchFile = async () => {
             try {
-                const response = await axios.get(`http://localhost:5000/api/files/${id}`, { withCredentials: true });
+                const response = await axios.get(`/api/files/${id}`, { withCredentials: true });
                 console.log(response)
                 setFile(response.data.file);
                 setTranscriptStatus(response.data.file.transcriptStatus)
@@ -63,74 +63,72 @@ const AudioAnalysisPage = () => {
 
     const handleTranscribe = async () => {
         console.log("clicked transcribe");
+
         if (transcriptStatus === "available") {
             setSnackbarOpen(true);
             setSnackbarMessage(`Transcription Status: AVAILABLE `);
             return;
         }
-
         try {
-            const response = await fetch(`http://localhost:5000/api/transcript`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ id }),
-                credentials: "include",
-            })
-
-            if (response.ok) {
-                const data = await response.json();
-                console.log(data)
-                const { transcriptStatus, message } = data;
-
-                if (transcriptStatus !== "not-available") {
-                    setTranscriptStatus(transcriptStatus);
-                    setSnackbarOpen(true);
-                    setSnackbarMessage(message);
+            const response = await axios.post('/api/transcript',
+                { id },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    withCredentials: true,
                 }
+            );
+            const data = response.data;
+            console.log(data);
+            const { transcriptStatus, message } = data;
+
+            if (transcriptStatus !== 'not-available') {
+                setTranscriptStatus(transcriptStatus);
+                setSnackbarOpen(true);
+                setSnackbarMessage(message);
             }
-
         } catch (error) {
-            setTranscriptStatus("not-available");
+            setTranscriptStatus('not-available');
             setSnackbarOpen(true);
-            setSnackbarMessage(error);
-            console.log(error)
+            setSnackbarMessage(error.message);
+            console.log(error);
         }
-
-    }
+    };
 
     const handleSummary = async () => {
         console.log("clicked summarize");
+
         if (summaryStatus === AVAILABLE) {
             setSnackbarMessage("Media already summarized");
             setSnackbarOpen(true);
             return;
         }
+
         try {
+            const response = await axios.post("/api/summary",
+                { id },
+                {
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    withCredentials: true,
+                }
+            );
 
-            const response = await fetch("http://localhost:5000/api/summary", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ id })
-            })
-            if (response.ok) {
-                const data = await response.json();
-                console.log(data);
-                setSnackbarMessage(data.message);
-                setSnackbarOpen(true);
-                setSummaryStatus(data.summaryStatus);
-            }
-        } catch (error) {
-            console.log(error)
-            setSnackbarMessage(error)
+
+            const data = response.data;
+            console.log(data);
+            setSnackbarMessage(data?.message);
             setSnackbarOpen(true);
-            setSummaryStatus(data.summaryStatus);
-        }
+            setSummaryStatus(data?.summaryStatus);
 
-    }
+        } catch (error) {
+            console.log(error);
+            setSnackbarMessage(error.message);
+            setSnackbarOpen(true);
+        }
+    };
 
     const renderTranscription = () => {
         if (transcriptStatus === NOT_AVAILABLE) {
@@ -181,7 +179,7 @@ const AudioAnalysisPage = () => {
         console.log("transcript clicked")
         // if (transcriptStatus === AVAILABLE && transcript !== null) return;
         try {
-            const response = await axios.get(`http://localhost:5000/api/transcript/${id}`, { withCredentials: true })
+            const response = await axios.get(`/api/transcript/${id}`, { withCredentials: true })
 
             // console.log(data);
             if (response.data.transcript) {
@@ -200,7 +198,7 @@ const AudioAnalysisPage = () => {
         console.log("clicked summary");
         // if (summaryStatus === AVAILABLE ) return;
         try {
-            const response = await axios.get(`http://localhost:5000/api/summary/${id}`, {withCredentials:true});
+            const response = await axios.get(`/api/summary/${id}`, { withCredentials: true });
             if (response) {
                 const data = response.data;
                 console.log(data);
@@ -220,7 +218,7 @@ const AudioAnalysisPage = () => {
     const staticFileURL = `http://localhost:5000/files/${file?.fileName}`
     const formatDate = (dateString) => {
         return format(new Date(dateString), "MMMM dd, yyyy, HH:mm aa");
-      };
+    };
 
     return (
         <Box >
@@ -233,7 +231,7 @@ const AudioAnalysisPage = () => {
 
                         <video controls src={staticFileURL} style={{ width: '100%' }} />
 
-                        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" , px:2}}>
+                        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", px: 2 }}>
                             <Box>
                                 <Typography
                                     sx={{
@@ -250,7 +248,7 @@ const AudioAnalysisPage = () => {
                                         color: 'text.secondary'
                                     }}
                                 >
-                                    {file?.createdAt? formatDate(file?.createdAt): "nodate"}
+                                    {file?.createdAt ? formatDate(file?.createdAt) : "nodate"}
                                 </Typography>
                             </Box>
                             <Box >

@@ -1,7 +1,7 @@
 import { Alert, Snackbar } from '@mui/material';
 import React from 'react';
 
-const SnackbarAlert = ({ open, close, type, children, duration = 6000 }) => {
+const SnackbarAlert = ({ open, close, type = "success", children, duration = 3000 }) => {
   return (
     <Snackbar
       open={open}

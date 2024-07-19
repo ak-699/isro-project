@@ -2,32 +2,40 @@ import React, { useContext, useState } from 'react';
 import { Box, Grid, TextField, Button, Typography } from '@mui/material';
 import GoogleIcon from '@mui/icons-material/Google'; // Ensure you have @mui/icons-material installed
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import AuthContext from '../contexts/Auth/AuthContext';
+import LandingHeader from '../components/LandingHeader';
+import SnackbarAlert from '../components/SnackbarAlert';
+import axios from '../axios/axios';
 
 const LoginPage = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const {setIsAuthenticated, setUser} = useContext(AuthContext)
+    const { setIsAuthenticated, setUser } = useContext(AuthContext)
     const navigate = useNavigate();
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState("");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log("clicked submit")
         try {
-            const response = await axios.post("http://localhost:5000/api/auth/login", {username, password}, {withCredentials: true});
+            const response = await axios.post("/api/auth/login", { username, password }, { withCredentials: true });
             console.log(response.data);
             setIsAuthenticated(true);
             setUser(response.data.user);
             navigate(`/${response.data.user.username}`)
-            
+
         } catch (error) {
             console.log(error);
+            setSnackbarMessage(error.message);
+            setSnackbarOpen(true);
+            
         }
     }
 
     return (
         <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center' }}>
+            <LandingHeader />
             <Grid container sx={{ minHeight: '100vh' }}>
                 <Grid
                     item
@@ -63,7 +71,7 @@ const LoginPage = () => {
                             onChange={e => setPassword(e.target.value)}
                             fullWidth
                         />
-                        <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2, p:2 }}>Login</Button>
+                        <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2, p: 2 }}>Login</Button>
                         {/* <Button
                             variant="contained"
                             fullWidth
@@ -95,6 +103,11 @@ const LoginPage = () => {
                     }}
                 />
             </Grid>
+            <SnackbarAlert 
+                open={snackbarOpen} 
+                close={() => setSnackbarOpen(false)} 
+                type={"error"}
+            >{snackbarMessage}</SnackbarAlert>
         </Box>
     );
 };
