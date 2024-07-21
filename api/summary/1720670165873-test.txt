@@ -1,8 +1,0 @@
-Here is a summary of the transcript:
-
-The recording system has certain options:
-
-* You can pause or stop the recording at any time.
-* However, once started, you cannot cancel the recording mid-process.
-* If you try to leave the recording without saving it, you will be prompted with a notification asking if you're sure you want to abandon the recording (which would result in loss of data).
-* You have the option to stop the recording now.
