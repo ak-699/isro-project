@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useContext } from 'react';
 import { Box, Button, Typography, Paper, IconButton, Grid, Tooltip, Zoom, styled } from '@mui/material';
 import MicIcon from '@mui/icons-material/Mic';
 import PauseIcon from '@mui/icons-material/Pause';
@@ -10,6 +10,7 @@ import FileUploadIcon from '@mui/icons-material/FileUpload';
 import { useTheme } from '@emotion/react';
 import SnackbarAlert from '../components/SnackbarAlert';
 import axios from '../axios/axios';
+import AuthContext from '../contexts/Auth/AuthContext';
 
 
 const RecordPage = () => {
@@ -22,6 +23,7 @@ const RecordPage = () => {
     const audioChunks = useRef([]);
     const intervalRef = useRef(null);
     const navigate = useNavigate();
+    const {user} = useContext(AuthContext);
     const theme = useTheme();
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const handleSnackbarClose = () => {
@@ -115,7 +117,7 @@ const uploadRecording = () => {
         const data = response.data;
         console.log("File uploaded successfully: ", data);
         setUploaded(true);
-        navigate(`/user/files/${data.doc._id}`);
+        navigate(`/${user.username}/files/${data.doc._id}`);
     })
     .catch(err => {
         console.log("Error occurred while uploading", err);
@@ -138,7 +140,7 @@ const uploadRecording = () => {
             const confirmLeave = window.confirm("You have an unsaved recording. Are you sure you want to leave? Your recording will be lost.");
             if (!confirmLeave) return;
         }
-        navigate("/user");
+        navigate(`/${user.username}`);
     };
 
     return (

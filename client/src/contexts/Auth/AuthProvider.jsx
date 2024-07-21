@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 // import axios from 'axios';
 import AuthContext from './AuthContext';
 import axios from '../../axios/axios.js';
+import { Navigate } from 'react-router-dom';
 
 const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -34,9 +35,9 @@ const AuthProvider = ({ children }) => {
     const logout = async ()=> {
         console.log("logging out")
         const response = await axios.get("/api/auth/logout", {withCredentials: true})
-        console.log(response.data)
+        console.log(response.data);
         setIsAuthenticated(false)
-        setUser(null)
+        setUser(null);
     }
 
     return (
