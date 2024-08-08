@@ -2,6 +2,7 @@ import { spawn } from "node:child_process";
 
 const transcribe = async (media, model, output) => {
     console.log("Spawning whisper process...");
+    const whisper_vnev = "";
     const command = "whisper";
     const args = [media, "--model", model, "-o", output];
 

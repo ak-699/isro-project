@@ -34,7 +34,7 @@ const startTranscription = async (req, res) => {
         await file.save();
     } catch (error) {
         file.transcriptStatus = process.env.NOT_AVAILABLE;
-        await doc.save();
+        await file.save();
     }
 }
 
@@ -49,7 +49,7 @@ const getTranscript = async (req, res) => {
         if (existsSync(file.transcriptURL)) {
 
             const transcript = readFileSync(file.transcriptURL);
-            return res.json({ transcript, file });
+            return res.json({ transcript: transcript.toString(), file });
         }
         return res.status(500).json({ message: "server error" })
     } else if (file.transcriptStatus === process.env.IN_PROGRESS) {
